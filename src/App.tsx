@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, CalendarDays, UtensilsCrossed } from 'lucide-react';
+import PosPage from './PosPage';
+import BookingPage from './BookingPage';
 
-function App() {
-  const [count, setCount] = useState(0)
+const Navigation: React.FC = () => {
+  const location = useLocation();
+  
+  const getLinkClass = (path: string): string => {
+    const baseClass = "p-3 rounded-xl transition-all";
+    return location.pathname === path 
+      ? `${baseClass} bg-blue-600 text-white` 
+      : `${baseClass} text-gray-400 hover:bg-gray-800 hover:text-white`;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <nav className="w-20 bg-gray-900 h-screen flex flex-col items-center py-6 gap-6 fixed left-0 top-0 z-50">
+      <div className="p-2 bg-blue-600 rounded-lg mb-4">
+        <UtensilsCrossed size={24} className="text-white" />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      
+      <Link to="/" className={getLinkClass('/')}>
+        <CalendarDays size={24} />
+      </Link>
+      
+      <Link to="/pos" className={getLinkClass('/pos')}>
+        <LayoutDashboard size={24} />
+      </Link>
+    </nav>
+  );
+};
 
-export default App
+export default function App() {
+  return (
+    <Router>
+      <div className="flex pl-20">
+        <Navigation />
+        <main className="flex-1 w-full min-h-screen bg-gray-100">
+          <Routes>
+            <Route path="/" element={<BookingPage />} />
+            <Route path="/pos" element={<PosPage />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  );
+}
